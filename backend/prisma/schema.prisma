@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  name       String
+  email      String
+  document   String
+  password   String
+  role       UsersRole @default(master)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+
+  @@map("user")
+}
+
+model Teacher {
+  id         Int      @id @default(autoincrement())
+  name       String
+  password   String
+  email      String
+  document   String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  course     Course?
+
+  @@map("teacher")
+}
+
+model Student {
+  id         Int      @id @default(autoincrement())
+  name       String
+  document   String
+  password   String
+  email      String
+  year       Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  result     Result[]
+
+  @@map("student")
+}
+
+model Course {
+  id   Int    @id @default(autoincrement())
+  name String @default("Science")
+
+  teacher   Teacher? @relation(fields: [teacherId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  teacherId Int?     @unique
+
+  result Result[]
+
+  @@map("course")
+}
+
+model Result {
+  id    Int  @id @default(autoincrement())
+  grade Int?
+
+  course   Course? @relation(fields: [courseId], references: [id])
+  courseId Int
+
+  Student   Student? @relation(fields: [studentId], references: [id])
+  studentId Int?
+
+  @@map("result")
+}
+
+enum UsersRole {
+  master
+  editor
+}
