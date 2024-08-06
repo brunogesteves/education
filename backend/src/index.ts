@@ -1,10 +1,12 @@
 import express from "express";
-import routes from "./routes";
+import routes from "@/routes";
 
 import cors from "cors";
 
 const app = express();
 app.use(cors());
+app.use("/src/files", express.static("src/files"));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 var bodyParser = require("body-parser");

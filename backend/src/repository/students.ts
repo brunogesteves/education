@@ -89,3 +89,18 @@ export const getById = async (id: number) => {
 export const remove = async (id: number) => {
   return await db.delete({ where: { id } });
 };
+
+export const verifyLogin = async (email: string, password: string) => {
+  const studentVerifyPassword = await db.findFirst({
+    where: {
+      email,
+    },
+    select: { password: true, id: true },
+  });
+  if (studentVerifyPassword.password === password) {
+    const studentrData = await getAllGrades(studentVerifyPassword.id);
+    return studentrData;
+  } else {
+    return false;
+  }
+};

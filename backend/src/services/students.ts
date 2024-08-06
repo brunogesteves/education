@@ -1,5 +1,5 @@
 import { Result, Student } from "@prisma/client";
-import * as StudentsRepository from "../repository/students";
+import * as StudentsRepository from "@repository/students";
 
 export const list = async (currentPage: number) => {
   return StudentsRepository.list(currentPage);
@@ -26,3 +26,7 @@ export const getAllGrades = (id: number) => StudentsRepository.getAllGrades(id);
 
 export const updateGrade = (values: Result) =>
   StudentsRepository.updateGrade(values);
+
+export const login = async (email: string, password: string) => {
+  return StudentsRepository.verifyLogin(email, password);
+};

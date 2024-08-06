@@ -13,9 +13,14 @@
     "experimentalDecorators": true,
     "pretty": true,
     "baseUrl": "./src",
-    "rootDirs": ["./src", "./test"],
+    // "rootDirs": ["./src", "./test"],
     "paths":{
-      "@/*": ["./*"]
+      "@/*": ["./*", "./"],
+      "@routes/*":["routes/*"],
+      "@controllers/*":["controllers/*"],
+      "@services/*":["services/*"],
+      "@repository/*":["repository/*"],
+      "@files/*":["files/*"],
     },
     "declaration": true,
     "isolatedModules": true,

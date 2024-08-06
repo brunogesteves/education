@@ -1,17 +1,20 @@
+import { createJWT } from "@/utils/createJWT";
 import prisma from "./prisma";
 import bcrypt from "bcrypt";
+import { User } from "@prisma/client";
 
 const { user: db } = prisma;
+
 interface LoginProps {
   email: string;
   password: string;
 }
 
-const newPasswordHash = async (password: string): Promise<undefined> => {
-  const saltRounds = 10;
-
-  bcrypt.genSalt(saltRounds).then(async (salt) => {
-    return await bcrypt.hash(password, salt);
+export const getAllUsers = async () => {
+  return await db.findMany({
+    where: {
+      role: "editor",
+    },
   });
 };
 
@@ -33,17 +36,57 @@ export const updatePassword = async (data: LoginProps) => {
     where: {
       email: data.email,
     },
-    select: {
-      id: true,
-    },
   });
 
-  return await db.update({
+  const saveNewPassword = await db.update({
     where: {
       id: userId.id,
     },
     data: {
       password: hashedPassword,
+    },
+  });
+
+  if (saveNewPassword) {
+    const { id, name, role, document, image, email } = saveNewPassword;
+    return createJWT(id, name, role, document, image, email);
+  }
+};
+
+export const addUpdateEditor = async (data: User) => {
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(data.password, salt);
+  const { id, name, role, email, document, image } = data;
+  return await db.upsert({
+    where: {
+      id: Number(id),
+    },
+    update: {
+      name: name,
+      role: role,
+      email: email,
+      document: document,
+      password: hashedPassword,
+      image: image,
+    },
+    create: {
+      name: name,
+      role: role,
+      email: email,
+      document: document,
+      password: hashedPassword,
+      image: image,
+    },
+  });
+};
+
+export const updateNameImage = async (nameFile: string, id: number) => {
+  return await db.update({
+    where: {
+      id: id,
+    },
+    data: {
+      image: nameFile.toLowerCase(),
     },
   });
 };

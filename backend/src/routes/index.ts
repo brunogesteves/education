@@ -1,19 +1,19 @@
 import { Router } from "express";
 
-import Courses from "./courses";
-import Teacher from "./teachers";
-import Students from "./students";
-import Users from "./users";
-import Login from "./login";
-import Files from "./files";
+import Courses from "@routes/courses";
+import Teacher from "@routes/teachers";
+import Students from "@routes/students";
+import Users from "@routes/users";
+import Login from "@routes/login";
+import File from "@routes/file";
 
 const router = Router();
 
-router.use("/students", Students);
 router.use("/courses", Courses);
+router.use("/students", Students);
 router.use("/teachers", Teacher);
 router.use("/users", Users);
 router.use("/login", Login);
-router.use("/files", Files);
+router.use("/files", File);
 
 export default router;

@@ -1,5 +1,5 @@
 import { Course } from "@prisma/client";
-import * as CoursesRepository from "../repository/courses";
+import * as CoursesRepository from "repository/courses";
 
 export const list = async () => {
   return CoursesRepository.list();

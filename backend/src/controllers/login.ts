@@ -1,4 +1,4 @@
-import * as AuthServices from "../services/login";
+import * as AuthServices from "@services/login";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -15,14 +15,16 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       if (passwordValidation) {
         const token = jwt.sign(
           {
+            id: userData.id,
             name: userData.name,
-            role: userData.role,
-            email: userData.email,
             password: req.body.data.password,
+            role: userData.role,
+            image: userData.image,
+            email: userData.email,
           },
           process.env.SECRET
         );
-        res.json({ status: token });
+        res.json({ token: token });
       } else {
         res.json({ msg: "Senha errada" });
       }

@@ -1,5 +1,6 @@
-import * as StudentsServices from "../services/students";
+import * as StudentsServices from "@services/students";
 import { Request, Response } from "express";
+import { createJWTStudent } from "@/utils/createJWT";
 
 export const list = async (req: Request, res: Response): Promise<void> => {
   const { currentPage } = req.params;
@@ -112,6 +113,23 @@ export const updateGrade = async (
   try {
     const data = await StudentsServices.updateGrade(values);
     res.json(data);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send("Erro");
+  }
+};
+
+export const login = async (req: Request, res: Response): Promise<void> => {
+  const { email, password } = req.params;
+  try {
+    const data = await StudentsServices.login(email, password);
+    if (data) {
+      const { id, name } = data;
+      const token = createJWTStudent(id, name);
+      res.json({ results: data, token });
+    } else if (!data) {
+      res.json({ results: data });
+    }
   } catch (e) {
     console.log(e);
     res.status(500).send("Erro");

@@ -22,6 +22,7 @@ export const create = async (newTeacher: Omit<Teacher, "id">) => {
       name: newTeacher.name,
       password: newTeacher.password,
       email: newTeacher.email,
+      image: newTeacher.image,
       document: newTeacher.document,
     },
   });
@@ -55,7 +56,7 @@ export const remove = async (id: number) => {
   });
 };
 
-export const getById = async (id: number) => {
+export const getGrades = async (id: number) => {
   return await db.findUnique({
     where: {
       id,
@@ -70,4 +71,19 @@ export const getById = async (id: number) => {
       },
     },
   });
+};
+
+export const verifyLogin = async (email: string, password: string) => {
+  const teacherVerifyPassword = await db.findFirst({
+    where: {
+      email,
+    },
+    select: { password: true, id: true },
+  });
+  if (teacherVerifyPassword.password === password) {
+    const teacherData = await getGrades(teacherVerifyPassword.id);
+    return teacherData;
+  } else {
+    return false;
+  }
 };
